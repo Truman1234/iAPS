@@ -31,13 +31,6 @@ extension AutoISF {
         @Published var b30factor: Decimal = 5
         @Published var b30_duration: Decimal = 30
 
-        // Keto Protection
-        @Published var ketoProtect: Bool = false
-        @Published var variableKetoProtect: Bool = false
-        @Published var ketoProtectAbsolut: Bool = false
-        @Published var ketoProtectBasalPercent: Decimal = 20
-        @Published var ketoProtectBasalAbsolut: Decimal = 0
-
         // Nighttime settings
         @Published var nightTime = NightTimeConfiguration.default
 
@@ -70,11 +63,6 @@ extension AutoISF {
             subscribeSetting(\.b30factor, on: $b30factor) { b30factor = $0 }
             subscribeSetting(\.b30_duration, on: $b30_duration) { b30_duration = $0 }
 
-            subscribeSetting(\.ketoProtect, on: $ketoProtect) { ketoProtect = $0 }
-            subscribeSetting(\.variableKetoProtect, on: $variableKetoProtect) { variableKetoProtect = $0 }
-            subscribeSetting(\.ketoProtectAbsolut, on: $ketoProtectAbsolut) { ketoProtectAbsolut = $0 }
-            subscribeSetting(\.ketoProtectBasalPercent, on: $ketoProtectBasalPercent) { ketoProtectBasalPercent = $0 }
-            subscribeSetting(\.ketoProtectBasalAbsolut, on: $ketoProtectBasalAbsolut) { ketoProtectBasalAbsolut = $0 }
             subscribeSetting(\.nightTime, on: $nightTime) { nightTime = $0 }
 
             subscribeSetting(\.units, on: $units) { units = $0 }
