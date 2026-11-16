@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DKA0657006CF56477C3526E6 /* DkaGuard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DKA066CAA060B7DB817DCE3E /* DkaGuard.swift */; };
+		DKA0102C70507AA6B1C9CD30 /* DkaProtection.swift in Sources */ = {isa = PBXBuildFile; fileRef = DKA0F0D35A9D7CC3E39CC7F7 /* DkaProtection.swift */; };
+		DKA063E7B416F782D8BE3BFB /* KetoProtectionDataFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DKA090123C2D03DF7A2B1B81 /* KetoProtectionDataFlow.swift */; };
+		DKA0D57BFC94BA761EB979B0 /* KetoProtectionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DKA02A05910491EC31CCA774 /* KetoProtectionProvider.swift */; };
+		DKA0FDE18118D4C9FDC4B2BF /* KetoProtectionStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DKA0D707059018DEA6934957 /* KetoProtectionStateModel.swift */; };
+		DKA016B598AFCB1CF04C218C /* KetoProtectionRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DKA00FDC036636A98ABC3BC2 /* KetoProtectionRootView.swift */; };
+		DKA0912058C4BF9129425020 /* DkaGuardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DKA08DD86C8FD658FF3E3A15 /* DkaGuardTests.swift */; };
 		041D1E995A6AE92E9289DC49 /* BolusDataFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D1A7CA8C10C4403D4BBFA7 /* BolusDataFlow.swift */; };
 		0437CE46C12535A56504EC19 /* SnoozeRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5822B15939E719628E9FF7C /* SnoozeRootView.swift */; };
 		056EB47E2B4C8B3D00CDE36E /* SystemSoundsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 056EB47D2B4C8B3D00CDE36E /* SystemSoundsManager.swift */; };
@@ -628,6 +635,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DKA066CAA060B7DB817DCE3E /* DkaGuard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DkaGuard.swift; sourceTree = "<group>"; };
+		DKA0F0D35A9D7CC3E39CC7F7 /* DkaProtection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DkaProtection.swift; sourceTree = "<group>"; };
+		DKA090123C2D03DF7A2B1B81 /* KetoProtectionDataFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KetoProtectionDataFlow.swift; sourceTree = "<group>"; };
+		DKA02A05910491EC31CCA774 /* KetoProtectionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KetoProtectionProvider.swift; sourceTree = "<group>"; };
+		DKA0D707059018DEA6934957 /* KetoProtectionStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KetoProtectionStateModel.swift; sourceTree = "<group>"; };
+		DKA00FDC036636A98ABC3BC2 /* KetoProtectionRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KetoProtectionRootView.swift; sourceTree = "<group>"; };
+		DKA08DD86C8FD658FF3E3A15 /* DkaGuardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DkaGuardTests.swift; sourceTree = "<group>"; };
 		0274EE6439B1C3ED70730D41 /* PumpSettingsEditorDataFlow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PumpSettingsEditorDataFlow.swift; sourceTree = "<group>"; };
 		056EB47D2B4C8B3D00CDE36E /* SystemSoundsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSoundsManager.swift; sourceTree = "<group>"; };
 		0CA3E609094E064C99A4752C /* PreferencesEditorStateModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PreferencesEditorStateModel.swift; sourceTree = "<group>"; };
@@ -1331,6 +1345,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DKA0196DC45D161BC13BEC35 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DKA00FDC036636A98ABC3BC2 /* KetoProtectionRootView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		DKA03EC393CF1BC4BC226545 /* KetoProtection */ = {
+			isa = PBXGroup;
+			children = (
+				DKA090123C2D03DF7A2B1B81 /* KetoProtectionDataFlow.swift */,
+				DKA02A05910491EC31CCA774 /* KetoProtectionProvider.swift */,
+				DKA0D707059018DEA6934957 /* KetoProtectionStateModel.swift */,
+				DKA0196DC45D161BC13BEC35 /* View */,
+			);
+			path = KetoProtection;
+			sourceTree = "<group>";
+		};
 		0610F7D6D2EC00E3BA1569F0 /* ConfigEditor */ = {
 			isa = PBXGroup;
 			children = (
@@ -1704,6 +1737,7 @@
 				6DC5D590658EF8B8DF94F9F5 /* AddCarbs */,
 				A9A4C88374496B3C89058A89 /* AddTempTarget */,
 				198F67B42CFCBD5D00E538CB /* AutoISF */,
+				DKA03EC393CF1BC4BC226545 /* KetoProtection */,
 				672F63EEAE27400625E14BAD /* AutotuneConfig */,
 				A42F1FEDFFD0DDE00AAD54D3 /* BasalProfileEditor */,
 				3811DE0425C9D32E00A708ED /* Base */,
@@ -2151,6 +2185,8 @@
 				193CA2DB2E1E742C00DF9998 /* FunctionScript.swift */,
 				193CA2D92E1E72A500DF9998 /* WebViewScriptExecutor.swift */,
 				388E596B25AD95110019842D /* OpenAPS.swift */,
+				DKA066CAA060B7DB817DCE3E /* DkaGuard.swift */,
+				DKA0F0D35A9D7CC3E39CC7F7 /* DkaProtection.swift */,
 				384E803325C385E60086DB71 /* JavaScriptWorker.swift */,
 				384E803725C388640086DB71 /* Script.swift */,
 				3821ED4B25DD18BA00BC42AD /* Constants.swift */,
@@ -2447,6 +2483,7 @@
 			children = (
 				38FCF3F125E9028E0078B0D1 /* Info.plist */,
 				38FCF3F825E902C20078B0D1 /* FileStorageTests.swift */,
+				DKA08DD86C8FD658FF3E3A15 /* DkaGuardTests.swift */,
 				F2A1C00130950A0100D6581E /* AIFoodAnalysisTests.swift */,
 			);
 			path = FreeAPSTests;
@@ -3486,6 +3523,12 @@
 				383948DA25CD64D500E91849 /* Glucose.swift in Sources */,
 				CE94598029E9E3BD0047C9C6 /* WatchConfigDataFlow.swift in Sources */,
 				388E596C25AD95110019842D /* OpenAPS.swift in Sources */,
+				DKA0657006CF56477C3526E6 /* DkaGuard.swift in Sources */,
+				DKA0102C70507AA6B1C9CD30 /* DkaProtection.swift in Sources */,
+				DKA063E7B416F782D8BE3BFB /* KetoProtectionDataFlow.swift in Sources */,
+				DKA0D57BFC94BA761EB979B0 /* KetoProtectionProvider.swift in Sources */,
+				DKA0FDE18118D4C9FDC4B2BF /* KetoProtectionStateModel.swift in Sources */,
+				DKA016B598AFCB1CF04C218C /* KetoProtectionRootView.swift in Sources */,
 				198CED9D2B2E62940073032D /* OverrideStorage.swift in Sources */,
 				E00EEC0527368630002FF094 /* StorageAssembly.swift in Sources */,
 				384E803825C388640086DB71 /* Script.swift in Sources */,
@@ -3924,6 +3967,7 @@
 			files = (
 				056EB47F2B4C8B3D00CDE36E /* SystemSoundsManager.swift in Sources */,
 				38FCF3F925E902C20078B0D1 /* FileStorageTests.swift in Sources */,
+				DKA0912058C4BF9129425020 /* DkaGuardTests.swift in Sources */,
 				F2A1C00230950A0100D6581E /* AIFoodAnalysisTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

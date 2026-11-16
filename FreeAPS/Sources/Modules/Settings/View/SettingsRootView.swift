@@ -102,6 +102,7 @@ extension Settings {
                         Text("Contact Image").navigationLink(to: .contactTrick, from: self)
                         Text("Dynamic ISF").navigationLink(to: .dynamicISF, from: self)
                         Text("Fat And Protein Conversion").navigationLink(to: .fpuConfig, from: self)
+                        Text("Ketoacidosis Protection").navigationLink(to: .ketoProtection, from: self)
                         Text("Sharing").navigationLink(to: .sharing, from: self)
                         Text("UI/UX").navigationLink(to: .uiConfig, from: self)
                     } header: { Text("Extra Features") }

@@ -159,21 +159,47 @@ final class OpenAPS {
                     if var suggestion = Suggestion(from: suggested) {
                         now = Date.now
 
-                        // Auto ISF
-                        if let mySettings = settings, mySettings.autoisfEffective, let iob = suggestion.iob {
-                            // If IOB < one hour of negative insulin and keto protection is active, then enact a small keto protection basal rate
-                            if mySettings.ketoProtect, iob < 0,
-                               let rate = suggestion.rate, rate <= 0,
-                               let basal = self.readBasal(alteredProfile), iob < -basal, (suggestion.units ?? 0) <= 0,
-                               let basalRate = self.aisfBasal(mySettings, basal, oref0Suggestion: suggestion)
-                            {
-                                suggestion = basalRate
-                            }
+                        // Keto Protection, simple variant (Ketoacidosis menu → Simple).
+                        // If IOB < one hour of negative insulin, then enact a small keto protection basal rate.
+                        if let mySettings = settings, mySettings.ketoProtectionMode == .simple, let iob = suggestion.iob,
+                           iob < 0,
+                           let rate = suggestion.rate, rate <= 0,
+                           let basal = self.readBasal(alteredProfile), iob < -basal, (suggestion.units ?? 0) <= 0,
+                           let basalRate = self.ketoProtectBasal(mySettings, basal, oref0Suggestion: suggestion)
+                        {
+                            suggestion = basalRate
                         }
 
                         // Process any eventual middleware/B30 basal rate
                         if let newSuggestion = self.overrideBasal(alteredProfile: profile, oref0Suggestion: suggestion) {
                             suggestion = newSuggestion
+                        }
+
+                        // Keto Protection, complex variant (Ketoacidosis menu → Complex): AIMI DKA guard.
+                        // Runs last so the basal floor and the SMB pause see the final decision.
+                        // It must never stop the loop, so it only reads local data and never throws.
+                        if let mySettings = settings, mySettings.ketoProtectionMode == .complex {
+                            let pumpSettings = self.storage.retrieve(OpenAPS.Settings.settings, as: PumpSettings.self)
+                            let scheduledBasal = self.readBasal(alteredProfile).map { NSDecimalNumber(decimal: $0).doubleValue } ?? 0
+                            let maxBasal = pumpSettings.map { NSDecimalNumber(decimal: $0.maxBasal).doubleValue } ?? scheduledBasal
+                            let tddTotal = ((tdd?.bolus ?? 0) as Decimal) + ((tdd?.tempBasal ?? 0) as Decimal)
+                            suggestion = DkaProtection.process(
+                                suggestion,
+                                settings: mySettings,
+                                inputs: DkaProtection.Inputs(
+                                    now: Date(),
+                                    glucose: glucose,
+                                    pumpHistory: self.pumpStorage.recent(),
+                                    tdd: NSDecimalNumber(decimal: tddTotal).doubleValue,
+                                    scheduledBasal: scheduledBasal,
+                                    maxBasal: max(maxBasal, scheduledBasal),
+                                    runningTempRate: NSDecimalNumber(decimal: currentTemp.rate).doubleValue,
+                                    runningTempMinutes: currentTemp.duration
+                                )
+                            )
+                        } else if DkaStateStore.lastDecision() != nil {
+                            // Complex variant switched off: remove a stale DKA notification/status.
+                            DkaProtection.reset()
                         }
                         // Add reasons, when needed
                         suggestion.reason = self.reasons(
@@ -735,8 +761,8 @@ final class OpenAPS {
         return returnSuggestion
     }
 
-    /// If iob is less than one hour of negative insulin and keto protection active, then enact a small keto protection basal rate
-    private func aisfBasal(
+    /// Keto Protection, simple variant: if iob is less than one hour of negative insulin, then enact a small keto protection basal rate
+    private func ketoProtectBasal(
         _ settings: FreeAPSSettings,
         _ basal: Decimal,
         oref0Suggestion: Suggestion
@@ -772,12 +798,8 @@ final class OpenAPS {
         returnSuggestion.rate = min(rate, pumpSettings.maxBasal)
         returnSuggestion.duration = 30
 
-        var reasonString = oref0Suggestion.reason
-        let endIndex = reasonString.endIndex
-        let insertedResons: String = reasonString + "\n\nKeto Protection Basal Rate Set: \(rate) U/h"
-        debug(.openAPS, "Auto ISF Keto Protection: Basal rate \(rate) U/h set for 30 minutes.")
-        reasonString.insert(contentsOf: insertedResons, at: endIndex)
-        returnSuggestion.reason = reasonString
+        returnSuggestion.reason = oref0Suggestion.reason + "\n\nKeto Protection Basal Rate Set: \(rate) U/h"
+        debug(.openAPS, "Keto Protection (simple): Basal rate \(rate) U/h set for 30 minutes.")
 
         return returnSuggestion
     }

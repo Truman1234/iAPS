@@ -158,12 +158,43 @@ struct FreeAPSSettings: JSON, Equatable {
     var ketoProtectBasalPercent: Decimal = 20
     var ketoProtectAbsolut: Bool = false
     var ketoProtectBasalAbsolut: Decimal = 0
+    // Keto protection, complex variant (AIMI DKA guard). Mutually exclusive with the simple variant
+    // above (ketoProtect); use `ketoProtectionMode` to read or change the selection.
+    var ketoProtectComplex: Bool = false
+    var dkaNotifyWatch: Bool = true
+    var dkaRestrictSMB: Bool = false
+    /// mg/dL. WATCH after 2 h above this.
+    var dkaHighBG: Decimal = 250
+    /// mg/dL. WARNING after 2 h above this, CRITICAL after 4 h.
+    var dkaVeryHighBG: Decimal = 300
+    var dkaSickDay: Bool = false
+    var dkaSGLT2: Bool = false
+    var dkaGLP1: Bool = false
+    /// Semaglutide / GLP-1 minimum insulin (basal floor).
+    var dkaFloorEnabled: Bool = false
+    /// % of the scheduled basal rate (10...100).
+    var dkaFloorPercent: Decimal = 50
+    /// mg/dL. The floor is never applied at or below this BG (70...180).
+    var dkaFloorMinBG: Decimal = 100
     // 1-min loops
     var allowOneMinuteLoop: Bool = false // allow running loops every minute
     var allowOneMinuteGlucose: Bool = false // allow sending 1-minute readings to oref, even if loops are with 5-minute intervals
     var ai: Bool = true
     var mealViewMicronutrients: Bool = false
     var nightTime = NightTimeConfiguration.default
+    /// Which ketoacidosis protection is active: none, the simple iAPS safety TBR, or the complex AIMI DKA guard.
+    /// Only one can be active. If both flags were ever stored as true, the complex variant wins.
+    var ketoProtectionMode: KetoProtectionMode {
+        get {
+            if ketoProtectComplex { return .complex }
+            return ketoProtect ? .simple : .off
+        }
+        set {
+            ketoProtect = newValue == .simple
+            ketoProtectComplex = newValue == .complex
+        }
+    }
+
     var autoisfEffective: Bool {
         autoisf && !isNighttime
     }
@@ -769,6 +800,41 @@ extension FreeAPSSettings: Decodable {
             settings.ketoProtectAbsolut = ketoProtectAbsolut
         }
 
+        // Keto Protection, complex variant (AIMI DKA guard)
+        if let ketoProtectComplex = try? container.decode(Bool.self, forKey: .ketoProtectComplex) {
+            settings.ketoProtectComplex = ketoProtectComplex
+        }
+        if let dkaNotifyWatch = try? container.decode(Bool.self, forKey: .dkaNotifyWatch) {
+            settings.dkaNotifyWatch = dkaNotifyWatch
+        }
+        if let dkaRestrictSMB = try? container.decode(Bool.self, forKey: .dkaRestrictSMB) {
+            settings.dkaRestrictSMB = dkaRestrictSMB
+        }
+        if let dkaHighBG = try? container.decode(Decimal.self, forKey: .dkaHighBG) {
+            settings.dkaHighBG = dkaHighBG
+        }
+        if let dkaVeryHighBG = try? container.decode(Decimal.self, forKey: .dkaVeryHighBG) {
+            settings.dkaVeryHighBG = dkaVeryHighBG
+        }
+        if let dkaSickDay = try? container.decode(Bool.self, forKey: .dkaSickDay) {
+            settings.dkaSickDay = dkaSickDay
+        }
+        if let dkaSGLT2 = try? container.decode(Bool.self, forKey: .dkaSGLT2) {
+            settings.dkaSGLT2 = dkaSGLT2
+        }
+        if let dkaGLP1 = try? container.decode(Bool.self, forKey: .dkaGLP1) {
+            settings.dkaGLP1 = dkaGLP1
+        }
+        if let dkaFloorEnabled = try? container.decode(Bool.self, forKey: .dkaFloorEnabled) {
+            settings.dkaFloorEnabled = dkaFloorEnabled
+        }
+        if let dkaFloorPercent = try? container.decode(Decimal.self, forKey: .dkaFloorPercent) {
+            settings.dkaFloorPercent = dkaFloorPercent
+        }
+        if let dkaFloorMinBG = try? container.decode(Decimal.self, forKey: .dkaFloorMinBG) {
+            settings.dkaFloorMinBG = dkaFloorMinBG
+        }
+
         // 1-minute loops
         if let allowOneMinuteLoop = try? container.decode(Bool.self, forKey: .allowOneMinuteLoop) {
             settings.allowOneMinuteLoop = allowOneMinuteLoop
@@ -807,4 +873,21 @@ enum LightMode: String, JSON, Identifiable, CaseIterable {
     case auto = "Auto"
 
     var id: LightMode { self }
+}
+
+/// Selection in the Ketoacidosis menu. Only one variant can be active at a time.
+enum KetoProtectionMode: String, CaseIterable, Identifiable {
+    case off
+    case simple
+    case complex
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .off: return NSLocalizedString("Off", comment: "Keto protection mode")
+        case .simple: return NSLocalizedString("Simple", comment: "Keto protection mode")
+        case .complex: return NSLocalizedString("Complex", comment: "Keto protection mode")
+        }
+    }
 }
